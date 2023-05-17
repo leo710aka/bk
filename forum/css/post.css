@@ -1,0 +1,48 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1, h2 {
+    margin: 0;
+    padding: 0;
+    font-family: 'Nanum Gothic', Arial, sans-serif;
+  } 
+
+  header {
+    background-color: #64a3bd;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  #post-title {
+    text-align: center;
+    font-size: 30px;
+
+  }
+  
+  #post-time {
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  main {
+    padding: 20px;
+  }
+  
+  #post-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  p {
+    margin: 0 0 20px;
+    line-height: 1.6;
+  }
+  

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>论坛</title>
+	<link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+	<header>
+		<h1>NI论坛</h1>
+		<div id="login-form">
+			<form>
+				<label for="username">用户名:</label>
+				<input type="text" id="username" name="username"><br>
+				&thinsp;   
+				<label for="password">密码:</label>
+				<input type="password" id="password" name="password">
+				&nbsp; &nbsp; 
+				<button type="submit" id="login-btn">登陆</button>
+			</form>
+		</div>
+        <div><span id="logged-in-user" style="display:none;"></span></div>
+	</header>
+	<main>
+		<div id="new-post">
+			<h2>发布新帖</h2>
+			<form id="post-form">
+				<label for="post-title">标题：</label>
+				<input type="text" id="post-title" name="post-title" maxlength="10" placeholder="请输入标题"><br>
+				<!-- <label>内容：</label>
+				<input id="post-content" contenteditable="true" 
+                       style="background-color: rgb(229, 216, 228);border-radius: 5px; border-color: black; width: 100%;" > -->
+				<label for="post-title">内容：</label>
+				<textarea id="post-content" contenteditable="true"  rows="4" cols="50" placeholder="请输入帖子内容"></textarea>
+				<div id="post-content-count"></div>
+				<button type="submit" id="post-btn">发布</button>
+			</form>
+		</div>
+
+		<!-- 显示帖子的区域 -->
+		<div id="postContainer"></div>
+        
+		<div style="margin: 15px;">
+			<h2>帖子列表</h2>
+			<div id="pagination">
+				<button id="prev-page-btn">上一页</button>
+				<span id="current-page">1</span>&nbsp;&nbsp;
+				<button id="next-page-btn">下一页</button>
+				<select id="posts-per-page">
+					<option value="5">5条/页</option>
+					<option value="10" selected>10条/页</option>
+					<option value="20">20条/页</option>
+				</select>
+			</div>
+			<table>
+				<thead>
+					<tr>
+						<th><input type="checkbox" id="check-all"></th>
+						<th>标题</th>
+						<th>发布时间</th>
+					</tr>
+				</thead>
+				<tbody id="post-list">
+					<!-- <tr id="each-post">
+						<td><input type="checkbox" id="post-check"></td>
+						<td><a href="#">帖1</a></td>
+						<td>2023-05-11 15:00:00</td>
+						<input type="hidden" id="text" value="111">
+					</tr> -->
+				</tbody>
+			</table>
+			<button id="delete-btn">删除</button>
+		</div>
+	</main>
+
+	<script src="js/index.js"></script>
+</body>
+</html>
