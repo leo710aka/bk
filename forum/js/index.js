@@ -29,7 +29,7 @@ const potList = document.getElementById("post-list");
 var posts = [];  // 存储已发布的帖子
 
 //预存几篇
-var post1 = {  title: "刘洪涛",  content: "12213123213",  timestamp: new Date().toLocaleString() , user : null};
+var post1 = {  title: "黄业凯",  content: "sb",  timestamp: new Date().toLocaleString() , user : null};
 // var post2 = {  title: "何佳慧",  content: "12213123213",  timestamp: new Date().toLocaleString() , user : null };
 posts.push(post1);
 for (var i = 0; i < posts.length; i++) {
