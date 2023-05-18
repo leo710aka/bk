@@ -28,10 +28,10 @@ const postForm = document.getElementById("post-form");
 const potList = document.getElementById("post-list");
 var posts = [];  // 存储已发布的帖子
 
-//预存几篇
-var post1 = {  title: "黄业凯",  content: "sb",  timestamp: new Date().toLocaleString() , user : null};
-// var post2 = {  title: "何佳慧",  content: "12213123213",  timestamp: new Date().toLocaleString() , user : null };
-posts.push(post1);
+//预存一篇
+var post1 = {  title: "刘洪涛",  content: "12213123213",  timestamp: new Date().toLocaleString() , user : null};
+var post2 = {  title: "何佳慧",  content: "12213123213",  timestamp: new Date().toLocaleString() , user : null };
+posts.push(post1);posts.push(post2);
 for (var i = 0; i < posts.length; i++) {
   var post = posts[i];
   // 创建表格行
@@ -75,89 +75,120 @@ postContent.addEventListener("input", function (event) {
   const remainingChars = 100 - event.target.value.length;
   postContentCount.textContent = remainingChars + "个字符剩余";
 });
-
 postForm.addEventListener("submit", function(event) {
   event.preventDefault(); // 阻止表单提交的默认行为
   var content = postContent.value.trim(); // 获取用户输入的内容
   var title = postTitle.value.trim();
+  var random = Math.floor(Math.random()*10000)+2;
   if (content !== "" && title != "") {
     // 创建帖子对象
     var post = {
       title: title,
       content: content,
-      timestamp: new Date().toLocaleString() // 记录时间戳
+      timestamp: new Date().toLocaleString(),
+      value: random //唯一标识
     };
     posts.push(post);
     postContent.value = "";
     postTitle.value = "";
     // 更新帖子显示
-    displayPosts();
+    showPosts();
+    postContentCount.textContent = "";
   }
 });
 
 
 // 论坛列表
 const postList = document.getElementById("post-list");
-const perPageSelect = document.getElementById("per-page-select");
+const currentPage = document.getElementById("current-page");
+const postsPerPage = document.getElementById("posts-per-page");
+const prevPageBtn = document.getElementById("prev-page-btn");
+const nextPageBtn = document.getElementById("next-page-btn");
 const deleteBtn = document.getElementById("delete-btn");
-
-// 渲染帖子列表
-function displayPosts() {
-  // 清空帖子显示区域
-  postList.innerHTML = "";
-  var username = loginUsername.value;
-  // 循环遍历帖子列表，创建帖子元素并添加到显示区域
-  for (var i = 0; i < posts.length; i++) {
-    var post = posts[i];
-    // 创建表格行
-    var tr = document.createElement("tr");
-    tr.id="each-post";
-    // 创建表格单元格并设置内容
-    var td = document.createElement("td");
-    var input = document.createElement("input");
-    input.type="checkbox";input.id="post-check";
-    td.appendChild(input);
-    var td1 = document.createElement("td");
-    var a = document.createElement("a");
-    a.href = "./post.html?title=" + encodeURIComponent(post.title) + "&content=" + encodeURIComponent(post.content) + "&time=" + encodeURIComponent(post.timestamp) + "&user=" + encodeURIComponent(username);
-    a.target = '_blank';
-    a.textContent = post.title;
-    td1.appendChild(a);
-    var td2 = document.createElement("td");
-    td2.textContent = post.timestamp;
-    var td3 = document.createElement("input");
-    td3.type="hidden";td3.id="text";td3.value=i;
-    // 将表格单元格添加到表格行
-    tr.appendChild(td);
-    tr.appendChild(td1);
-    tr.appendChild(td2);
-    tr.appendChild(td3);
-    console.log(tr);
-    potList.appendChild(tr);
-  }
-}
 
 // 删除帖子
 deleteBtn.addEventListener("click", function () {
-
   var de = document.querySelectorAll("#each-post");
   de.forEach(item=>{
     let checkbox = item.querySelector('#post-check') 
     if (checkbox.checked) {
-      // alert(item.querySelector('#text').value);
-      posts.splice(item.querySelector('#text').value, 1);
+      var i = 0;
+      for (; i<posts.length; i++){
+        if(posts[i].value==item.querySelector('#text').value) break;
+      }
+      posts.splice(i, 1);
     }
-    displayPosts();
+    showPosts();
   })
+});
+
+// 切页、切换每页显示的帖子数
+prevPageBtn.addEventListener("click", function () {
+  var page = parseInt(currentPage.innerText); 
+  if (page>1){
+    page--;
+    currentPage.innerText=page;
+    showPosts();
+  }
+});
+nextPageBtn.addEventListener("click", function () {
+  var page = parseInt(currentPage.innerText); 
+  var postsPerPage = parseInt(document.getElementById("posts-per-page").value); // 从下拉菜单获取每页显示的帖子数
+  if ((page*postsPerPage)<posts.length){
+    page++;
+    currentPage.innerText=page;
+    showPosts();
+  }
+});
+postsPerPage.addEventListener("change", function () {
+  currentPage.innerText=1;
+  showPosts();
+});
+
+function showPosts() {
+  // 清空帖子显示区域
+  postList.innerHTML = "";
+  var username = loginUsername.value;
+  var postsPerPage = parseInt(document.getElementById("posts-per-page").value); // 从下拉菜单获取每页显示的帖子数
+  var page = parseInt(currentPage.innerText); 
+  // 计算起始索引和结束索引
+  var endIndex = posts.length-1-(page-1)*postsPerPage;
+  var startIndex = endIndex-postsPerPage+1;
+  if (endIndex>=0){
+    if (startIndex<=0) startIndex=0;
+    var curPosts = posts.slice(startIndex, endIndex+1);
+    // 循环遍历帖子列表，创建帖子元素并添加到显示区域
+    for (var i = curPosts.length-1; i >= 0 ; i--) {
+      var post = curPosts[i];
+      // 创建表格行
+      var tr = document.createElement("tr");
+      tr.id="each-post";
+      // 创建表格单元格并设置内容
+      var td = document.createElement("td");
+      var input = document.createElement("input");
+      input.type="checkbox";input.id="post-check";
+      td.appendChild(input);
+      var td1 = document.createElement("td");
+      var a = document.createElement("a");
+      a.href = "./post.html?title=" + encodeURIComponent(post.title) + "&content=" + encodeURIComponent(post.content) + "&time=" + encodeURIComponent(post.timestamp) + "&user=" + encodeURIComponent(username);
+      a.target = '_blank';
+      a.textContent = post.title;
+      td1.appendChild(a);
+      var td2 = document.createElement("td");
+      td2.textContent = post.timestamp;
+      var td3 = document.createElement("input");
+      td3.type="hidden";td3.id="text";
+      // td3.value=i;
+      td3.value=post.value;
+      // 将表格单元格添加到表格行
+      tr.appendChild(td);
+      tr.appendChild(td1);
+      tr.appendChild(td2);
+      tr.appendChild(td3);
+      console.log(tr);
+      potList.appendChild(tr);
+    }
+  }
   
-});
-
-
-// 切换每页显示的帖子数
-perPageSelect.addEventListener("change", function (event) {
-  const perPage = event.target.value;
-  // TODO: 更新帖子列表显示
-});
-
-
+}
 
