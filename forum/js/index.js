@@ -1,12 +1,14 @@
 // 登陆模块
+//绑定组件
 const loginForm = document.getElementById("login-form");
 const loginUsername = document.getElementById("username");
 const loginPassword = document.getElementById("password");
 const loginBtn = document.getElementById("login-btn");
 const loggedInUser = document.getElementById("logged-in-user");
-
+//监听提交事件
 loginForm.addEventListener("submit", function (event) {
   event.preventDefault();
+  //获取表单中用户输入的数据
   const username = loginUsername.value;
   const password = loginPassword.value;
   // 进行用户名和密码的验证
@@ -66,18 +68,20 @@ postTitle.addEventListener("input", function (event) {
     event.target.value = event.target.value.slice(0, 10);
   }
 });
-postContent.addEventListener("input", function (event) {
-  // 内容长度不能超过100个字符
-  if (event.target.value.length > 100) {
-    event.target.value = event.target.value.slice(0, 100);
+//没法定位到TinyMCE初始化的输入框，所以使用全局监听
+var interval = setInterval(function() {
+  var content = tinymce.get('post-content').getContent({ format: 'text' });
+  var characterCount = content.trim().length;
+  postContentCount.textContent = 100-characterCount + "个字符剩余";
+  if(characterCount==0){
+    postContentCount.textContent = "";
   }
-  // 显示还可输入的字符数
-  const remainingChars = 100 - event.target.value.length;
-  postContentCount.textContent = remainingChars + "个字符剩余";
-});
+}, 100); // 每隔0.1秒执行一次,检查TinyMCE控件中的字符
+
 postForm.addEventListener("submit", function(event) {
   event.preventDefault(); // 阻止表单提交的默认行为
-  var content = postContent.value.trim(); // 获取用户输入的内容
+  // var content = postContent.value.trim(); // 获取用户输入的内容
+  var content = tinymce.get('post-content').getContent();
   var title = postTitle.value.trim();
   var random = Math.floor(Math.random()*10000)+2;
   if (content !== "" && title != "") {
@@ -89,13 +93,14 @@ postForm.addEventListener("submit", function(event) {
       value: random //唯一标识
     };
     posts.push(post);
-    postContent.value = "";
+    tinymce.get('post-content').setContent('');
     postTitle.value = "";
     // 更新帖子显示
     showPosts();
     postContentCount.textContent = "";
   }
 });
+
 
 
 // 论坛列表
